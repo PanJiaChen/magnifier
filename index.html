@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>图片放大镜</title>
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<style>
+	*{padding: 0;margin: 0;}
+	#small-box{
+		position: relative;
+		z-index: 1;
+		width: 512px;
+		height: 288px;
+	}
+	#float-box{
+		display: none;
+		width: 178px;
+		height: 100px;
+		position: absolute;
+		background: #ffffcc;
+		filter:alpha(opacity=50);
+		opacity: 0.5;
+		cursor: move;
+	}
+	#big-box{
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 560px;
+		width: 534px;
+		height: 300px;
+		overflow: hidden;
+		border: 1px solid #ccc;
+		z-index:1;
+	}
+	#big-box img{
+		position: absolute;
+		z-index: 5;
+	}
+</style>
+<script>
+ 	$(function(){
+ 		var oDemo=$('#demo');
+ 		var oSmallBox=$('#small-box');
+		$('#small-box').mouseover(function(event) {
+			$('#float-box').css({'display': 'block',});
+			$('#big-box').css({'display': 'block',});
+		});
+		$('#small-box').mouseout(function(event) {
+			$('#float-box').css({'display': 'none',});
+			$('#big-box').css({'display': 'none',});
+		});
+
+		$('#small-box').mousemove(function(event) {
+			var mleft=event.clientX-$('#demo').offset().left-$('#small-box').offset().left-$('#float-box').width()/2;
+			var mtop=event.clientY-$('#demo').offset().top-$('#small-box').offset().top-$('#float-box').height()/2;
+			if(mleft<0){
+				mleft=0
+			}
+			else if(mleft>($('#small-box img').width()-$('#float-box').width())){
+				mleft=$('#small-box img').width()-$('#float-box').width()
+			}
+			if(mtop<0){
+				mtop=0
+			}
+			else if(mtop>($('#small-box img').height()-$('#float-box').height())){
+				mtop=$('#small-box img').height()-$('#float-box').height()
+			}
+
+			$('#float-box').css({'left':mleft+'px','top':mtop+'px'});
+
+			var percentX=mleft/($('#small-box img').width()-$('#float-box').width())
+			var percentY=mtop/($('#small-box img').height()-$('#float-box').height())
+			$('#big-box img').css({
+				'left': -percentX*($('#big-box img').width()-$('#big-box').width())+"px",
+				'top': -percentY*($('#big-box img').height()-$('#big-box').height())+"px"
+			});
+
+		});
+
+	});
+</script>
+</head>
+
+
+<body>
+		<div id='demo'>
+			<div id='small-box'>
+				<div id='float-box'></div>
+				<img src="images/small.png">
+			</div>
+			<div id='big-box'>
+				<img src="images/big.jpg">
+			</div>
+		</div>
+</body>
+</html>
